@@ -1,0 +1,66 @@
+https://medium.com/swlh/apache-kafka-what-is-and-how-it-works-e176ab31fcd5
+
+As you can see it is very similar to what we’ve discussed about messaging, but here we don’t have the Queue concept, instead, we have the concept of Topics.
+
+The Topic is a very specific type of data stream, it’s very similar to a Queue, it receives and delivers messages as well, but there are some concepts that we need to understand about topics:
+
+A topic is divided into partitions, each topic can have one or more partitions and we need to specify that number when we're creating the topic. You can imagine the topic as a folder in the operation system and each folder inside her as a partition.
+If we don’t give any key to a message when we’re producing it, by default, the producers will send the message in a round-robin way, each partition will receive a message (even if they are sent by the same producer). Because of that, we aren’t able to guarantee the delivery order at the partition level, if we want to send a message always to the same partition, we need to give a key to our messages. This will ensure that the message will always be sent to the same partition;
+Each message will be stored in the broker disk and will receive an offset (unique identifier). This offset is unique at the partition level, each partition has its owns offsets. That is one more reason that makes Kafka so special, it stores the messages in the disk (like a database, and in fact, Kafka is a database too) to be able to recover them later if necessary. Different from a messaging system, that the message is deleted after being consumed;
+The producers use the offset to read the messages, they read from the oldest to the newest. In case of consumer failure, when it recovers, will start reading from the last offset;
+
+Brokers
+As said before, Kafka works in a distributed way. A Kafka cluster may contain many brokers as needed.
+
+Each broker in a cluster is identified by an ID and contains at least one partition of a topic. To configure the number of the partitions in each broker, we need to configure something called Replication Factor when creating a topic. Let’s say that we have three brokers in our cluster, a topic with three partitions and a Replication Factor of three, in that case, each broker will be responsible for one partition of the topic.
+
+It’s very important that the number of the partitions match the number of the brokers, in this way, each broker will be responsible for a single partition of the topic.
+
+To ensure the reliability of the cluster, Kafka enters with the concept of the Partition Leader. Each partition of a topic in a broker is the leader of the partition and can exist only one leader per partition. The leader is the only one that receives the messages, their replicas will just sync the data (they need to be in-sync to that). It will ensure that even if a broker goes down, his data won’t be lost, because of the replicas.
+
+When a leader goes down, a replica will be automatically elected as a new leader by Zookeeper.
+
+Producers
+Just like in the messaging world, Producers in Kafka are the ones who produce and send the messages to the topics.
+
+As said before, the messages are sent in a round-robin way. Ex: Message 01 goes to partition 0 of Topic 1, and message 02 to partition 1 of the same topic. It means that we can’t guarantee that messages produced by the same producer will always be delivered to the same topic. We need to specify a key when sending the message, Kafka will generate a hash based on that key and will know what partition to deliver that message.
+
+That hash takes into consideration the number of the partitions of the topic, that’s why that number cannot be changed when the topic is already created.
+
+When we are working with the concept of messages, there’s something called Acknowledgment (ack). The ack is basically a confirmation that the message was delivered. In Kafka, we can configure this ack when producing the messages. There are three different levels of configuration for that:
+
+ack = 0: When we configure the ack = 0, we’re saying that we don’t want to receive the ack from Kafka. In case of broker failure, the message will be lost;
+ack = 1: This is the default configuration, with that we’re saying that we want to receive an ack from the leader of the partition. The data will only be lost if the leader goes down (still there’s a chance);
+ack = all: This is the most reliable configuration. We are saying that we want to not only receive a confirmation from the leader but from their replicas as well. This is the most secure configuration since there’s no data loss. Remembering that the replicas need to be in-sync (ISR). If a single replica isn’t, Kafka will wait for the sync to send back de ack.
+
+Consumers and Consumers Groups
+Consumers are applications subscribed to one or more topics that will read messages from there. They can read from one or more partitions.
+
+When a consumer reads from just one partition, we can ensure the order of the reading, but when a single consumer reads from two or more partitions, it will read in parallel, so, there’s no guarantee of the reading order. A message that came later can be read before another that came earlier, for example.
+
+That’s why we need to be careful when choosing the number of partitions and when producing the messages.
+
+Another important concept of Kafka is the Consumer Groups. It’s really important when we need to scale the messages reading.
+
+It becomes very costly when a single consumer needs to read from many partitions, so, we need o load-balancing this charge between our consumers, this is when the consumer groups enter.
+
+The data from a single topic will be load-balancing between the consumers, with that, we can guarantee that our consumers will be able to handle and process the data.
+
+The ideal is to have the same number of consumers in a group that we have as partitions in a topic, in this way, every consumer read from only one. When adding consumers to a group, you need to be careful, if the number of consumers is greater than the number of partitions, some consumers will not read from any topic and will stay idle.
+
+Partitioning
+Topics are stored as log files on disk, and disks are notoriously finite in size. It would be no good if our ability to store events were limited to the disks on a single server, or if our ability to publish new events to a topic or subscribe to updates on that topic were limited to the I/O capabilities of a single server. To be able to scale out and not just up, Kafka gives us the option of breaking topics into partitions. Partitions are a systematic way of breaking the one topic log file into many logs, each of which can be hosted on a separate server. This gives us the ability in principle to scale topics out forever, although practical second-order effects and the finite amount of matter and energy available in the known universe to perform computation do place some upper bounds on scalability.
+
+ksqlDB
+Writing stream processing applications in Java is a nice thing to do if you’re using Kafka Streams, and if you’re using Java, and if it makes sense to marry stream processing functionality with the application itself. But what if you didn’t want to do those things? Or what if you wanted a simpler approach in which you just used SQL to get your stream processing done?
+
+This is precisely what ksqlDB is: an application-oriented stream processing database for Kafka. A small cluster of ksqlDB nodes runs continuous stream processing queries written in SQL, constantly consuming input events and producing results back into Kafka. It exposes the same stream and table abstractions as Kafka Streams and makes tables queryable through a lightweight JSON API. Feel free to check out the free introductory course on ksqlDB as well as a more advanced course called Inside ksqlDB to learn more.
+
+
+Lead partition - Each partition has one server which acts as the "leader" and zero or more servers which act as "followers". The leader handles all read and write requests for the partition while the followers passively replicate the leader. If the leader fails, one of the followers will automatically become the new leader. Each server acts as a leader for some of its partitions and a follower for others so load is well balanced within the cluster.
+Consumer group id - Consumers label themselves with a consumer group name, and each record published to a topic is delivered to one consumer instance within each subscribing consumer group. Consumer instances can be in separate processes or on separate machines.
+
+                    If all the consumer instances have the same consumer group, then the records will effectively be load balanced over the consumer instances.
+
+                    If all the consumer instances have different consumer groups, then each record will be broadcast to all the consumer processes.
+Transactional - kafka supports transactions
