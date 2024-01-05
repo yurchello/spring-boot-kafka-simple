@@ -1,0 +1,7 @@
+C:\work\projects\spring-boot-kafka-simple\producer\src\main\java\org\example\service\producer\Producer.java
+C:\work\projects\spring-boot-kafka-simple\producer\src\main\java\org\example\model\Order.java
+C:\work\projects\spring-boot-kafka-simple\producer\src\main\java\org\example\controller\OrderController.java
+C:\work\projects\spring-boot-kafka-simple\producer\src\main\java\org\example\service\service\KafkaMessagingService.java
+C:\work\projects\spring-boot-kafka-simple\producer\src\main\java\org\example\config\MapperConfig.java
+C:\work\projects\spring-boot-kafka-simple\producer\src\main\java\org\example\ProducerApp.java
+C:\work\projects\spring-boot-kafka-simple\producer\src\main\java\org\example\service\event\OrderSendEvent.java

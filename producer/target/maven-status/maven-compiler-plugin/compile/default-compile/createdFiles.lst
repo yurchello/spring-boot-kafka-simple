@@ -1,0 +1,7 @@
+org\example\model\Order.class
+org\example\controller\OrderController.class
+org\example\service\service\KafkaMessagingService.class
+org\example\service\event\OrderSendEvent.class
+org\example\service\producer\Producer.class
+org\example\ProducerApp.class
+org\example\config\MapperConfig.class

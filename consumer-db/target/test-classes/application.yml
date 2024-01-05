@@ -1,0 +1,18 @@
+spring:
+  kafka:
+    consumer:
+      group-id: "order-1"
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
+
+  liquibase:
+    change-log: classpath:db.changelog-master.yaml
+
+topic:
+  send-order: send-order-event

@@ -1,0 +1,93 @@
+{
+	"info": {
+		"_postman_id": "c7611a27-9498-41c9-926c-45fd41532b09",
+		"name": "Kafka simple",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2979860",
+		"_collection_link": "https://interstellar-flare-929705.postman.co/workspace/AIB~e9ddb406-4601-475b-a30c-29f4d7d2cbce/collection/2979860-c7611a27-9498-41c9-926c-45fd41532b09?action=share&source=collection_link&creator=2979860"
+	},
+	"item": [
+		{
+			"name": "test db consumer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/v1/order/test",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v1",
+						"order",
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "producer: send order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"price\": 12.0,\r\n    \"productName\": \"prod3\",\r\n    \"quantity\": 5,\r\n    \"barCode\": \"code3\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/v1/order",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v1",
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test db consumer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"price\": 12.0,\r\n    \"productName\": \"prod1\",\r\n    \"quantity\": 5,\r\n    \"barCode\": \"code1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/api/v1/order",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"v1",
+						"order"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

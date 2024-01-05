@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: liquibase/20231010_create_order_table.sql
+      relativeToChangelogFile: true

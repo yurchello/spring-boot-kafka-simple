@@ -1,0 +1,12 @@
+org\example\entity\Order$OrderBuilder.class
+org\example\service\messaging\KafkaMessagingService.class
+org\example\service\OrderServiceImpl.class
+org\example\entity\Order.class
+org\example\controller\TestController.class
+org\example\service\messaging\OrderEvent.class
+org\example\repository\OrdersRepository.class
+org\example\entity\Status.class
+org\example\service\OrderService.class
+org\example\DbConsumerApp.class
+org\example\config\MapperConfig.class
+org\example\dto\OrderDto.class
